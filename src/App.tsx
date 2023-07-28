@@ -19,14 +19,16 @@ if (!auth0Domain || !auth0ClientId) {
     throw new Error("Missing Auth0 Domain or Client ID")
 }
 
+console.log(auth0Domain, auth0ClientId)
+
 function App() {
     const queryClient = new QueryClient();
 
     return (
         <QueryClientProvider client={queryClient}>
             <Auth0Provider 
-                    domain='dev-exk13zfqzlld70vx.us.auth0.com'
-                    clientId='tyJQ9d8HCTu5BSrvNUBpA6EQv6BhzWJZ'
+                    domain={auth0Domain}
+                    clientId={auth0ClientId}
                     authorizationParams={{
                         redirect_uri: window.location.origin,
                         }}>
