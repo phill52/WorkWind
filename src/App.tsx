@@ -11,19 +11,20 @@ import Homepage from "./pages/Homepage";
 import Header from "./components/Header";
 import LoginButton from './components/LoginButton';
 import LogoutButton from "./components/LogoutButton";
+import { useAuthToken } from "./useAuthToken";
+import CheckUser from "./components/CheckUser";
 import './App.css'
 
-const auth0Domain = import.meta.env.VITE_AUTH0_DOMAIN;
-const auth0ClientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
+const auth0Domain:string = import.meta.env.VITE_AUTH0_DOMAIN;
+const auth0ClientId:string = import.meta.env.VITE_AUTH0_CLIENT_ID;
+const auth0Audience:string = import.meta.env.VITE_AUTH0_AUDIENCE
 if (!auth0Domain || !auth0ClientId) {
     throw new Error("Missing Auth0 Domain or Client ID")
 }
 
-console.log(auth0Domain, auth0ClientId)
 
 function App() {
     const queryClient = new QueryClient();
-
     return (
         <QueryClientProvider client={queryClient}>
             <Auth0Provider 
@@ -31,6 +32,7 @@ function App() {
                     clientId={auth0ClientId}
                     authorizationParams={{
                         redirect_uri: window.location.origin,
+                        audience: "https://dev-exk13zfqzlld70vx.us.auth0.com/api/v2/"
                         }}>
                 <BrowserRouter>
                             <LoginButton/>
