@@ -3,16 +3,18 @@ import {
   Routes,
   BrowserRouter
 } from "react-router-dom";
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
-import { Auth0Provider } from '@auth0/auth0-react';
-// import LoginScreen from './pages/LoginPage';
-// import SignupPage from './pages/SignupPage';
 import Homepage from "./pages/Homepage";
 import Header from "./components/Header";
 import LoginButton from './components/LoginButton';
 import LogoutButton from "./components/LogoutButton";
 import { useAuthToken } from "./useAuthToken";
 import CheckUser from "./components/CheckUser";
+import { useAuth0 } from "@auth0/auth0-react";
+import { Navigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import AuthContext from "./AuthContext";
+
 import './App.css'
 
 const auth0Domain:string = import.meta.env.VITE_AUTH0_DOMAIN;
@@ -23,29 +25,72 @@ if (!auth0Domain || !auth0ClientId) {
 }
 
 
+
 function App() {
-    const queryClient = new QueryClient();
+    const authToken = useAuthToken();
+    const fetchUserInfo = async () => {
+        if (authToken) {
+            try {
+                const response = await axios.get('http://127.0.0.1:5000/auth/users', {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                return response.data;
+            } catch (error) {
+                console.log(error)
+                return error;
+            }
+        }
+    }
+
+    const { data: userInfo, isLoading: isLoadingUserInfo, error: userError } = useQuery(['userInfo'], fetchUserInfo, { enabled: !!authToken })
+    const { isAuthenticated, isLoading: isAuthLoading } = useAuth0();
+    console.log("isAuthenticated",isAuthenticated)
+    const ProtectedRoute = ({ component: Component }: { component: React.ElementType }) => {
+        if (isAuthLoading||isLoadingUserInfo) {
+            return <p>Loading...</p>; // Show a loading state while checking authentication
+        }
+        if (isAuthenticated && userInfo.data!==false) {
+            return <Component />;
+        }
+        else if (isAuthenticated && userInfo.data===false) {
+            //modal to create profile component here
+            return <p>make an accoutn dude</p>
+        }
+        else {
+            console.log("not here fatass")
+            return <Navigate to="/" />;
+        }
+    };
+
+    const UnauthenticatedRoute = ({ component: Component }: { component: React.ElementType }) => {
+        if (isAuthLoading||isLoadingUserInfo) {
+            return <p>Loading...</p>; // Show a loading state while checking authentication
+        }
+        if (!isAuthenticated) {
+            return <Component />;
+        } else {
+            return <Navigate to="/protected" />;
+        }
+    };
+
+    
+
+
     return (
-        <QueryClientProvider client={queryClient}>
-            <Auth0Provider 
-                    domain={auth0Domain}
-                    clientId={auth0ClientId}
-                    authorizationParams={{
-                        redirect_uri: window.location.origin,
-                        audience: "https://dev-exk13zfqzlld70vx.us.auth0.com/api/v2/"
-                        }}>
-                <BrowserRouter>
-                            <LoginButton/>
-                            <LogoutButton/>
-                            {/* <Header/> */}
-                            <Routes>
-                                <Route path="/" element={<Homepage />} />
-                                {/* <Route path="/login" element={<LoginScreen />} />
-                                <Route path="/signup" element={<SignupPage />} /> */}
-                        </Routes>
-                </BrowserRouter>
-            </Auth0Provider>
-        </QueryClientProvider>
+        <AuthContext.Provider value={{userInfo, authToken}}>
+            <BrowserRouter>
+                <LoginButton/>
+                <LogoutButton/>
+                {/* <Header/> */}
+                <Routes>
+                    <Route path="/" element={<Homepage />} />
+                    <Route path="/checkthisout" element={<p>yo</p>} />
+                    <Route path='/thishere' element={ <ProtectedRoute component={() => <p>check this out</p>} />} />
+                    {/* <Route path="/login" element={<LoginScreen />} />
+                    <Route path="/signup" element={<SignupPage />} /> */}
+                </Routes>
+            </BrowserRouter>
+        </AuthContext.Provider>
     )
 }
 

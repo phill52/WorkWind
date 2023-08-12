@@ -10,7 +10,7 @@ export const useAuthToken = (): string | null => {
             if (isAuthenticated) {
                 const accessToken = await getAccessTokenSilently({
                     authorizationParams: {
-                        audience: `https://${auth0Domain}/api/v2/`,
+                        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
                     }
                 });
                 console.log(accessToken)
