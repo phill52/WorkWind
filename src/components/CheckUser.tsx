@@ -6,8 +6,7 @@ import { useContext } from "react";
 import AuthContext from "../AuthContext";
 
 export default function CheckUser(): JSX.Element {
-  const { isAuthenticated } =
-    useAuth0();
+  const { isAuthenticated } = useAuth0();
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const audience = import.meta.env.VITE_AUTH0_AUDIENCE;
 

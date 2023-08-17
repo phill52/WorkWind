@@ -56,7 +56,7 @@ function App() {
       return <Component />;
     } else if (isAuthenticated && userInfo.data === false) {
       //modal to create profile component here
-      return <MakeAccountPage/>;
+      return <MakeAccountPage />;
     } else {
       console.log("not here fatass");
       return <Navigate to="/" />;
