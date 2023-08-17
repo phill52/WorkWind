@@ -10,6 +10,7 @@ import { Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import AuthContext from "./AuthContext";
+import MakeAccountPage from "./pages/MakeAccountPage";
 
 import "./App.css";
 
@@ -55,7 +56,7 @@ function App() {
       return <Component />;
     } else if (isAuthenticated && userInfo.data === false) {
       //modal to create profile component here
-      return <p>make an accoutn dude</p>;
+      return <MakeAccountPage/>;
     } else {
       console.log("not here fatass");
       return <Navigate to="/" />;

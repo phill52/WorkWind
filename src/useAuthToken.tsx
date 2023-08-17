@@ -11,6 +11,7 @@ export const useAuthToken = (): string | null => {
         const accessToken = await getAccessTokenSilently({
           authorizationParams: {
             audience: import.meta.env.VITE_AUTH0_AUDIENCE,
+            scopes: ['openid', 'profile', 'email']
           },
         });
         console.log(accessToken);
