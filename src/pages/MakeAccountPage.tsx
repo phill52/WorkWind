@@ -5,8 +5,8 @@ import axios from "axios";
 
 type Inputs = {
   username: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
 };
 
 type APIResponse = {
@@ -25,10 +25,11 @@ export default function MakeAccountPage(): JSX.Element {
     setError,
     formState: { errors },
   } = useForm<Inputs>();
-  const authToken = useContext(AuthContext);
-
+  const { authToken } = useContext(AuthContext);
+  console.log(authToken);
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     let response: axios.AxiosResponse<APIResponse> | null = null;
+    // console.log("data", data);
     try {
       response = await axios.post("http://127.0.0.1:5000/users", data, {
         headers: { Authorization: `Bearer ${authToken}` },
@@ -64,14 +65,14 @@ export default function MakeAccountPage(): JSX.Element {
         )}
         first name
         <input
-          {...register("firstName", {
+          {...register("first_name", {
             required: true,
             minLength: 1,
             maxLength: 32,
             pattern: /^[^±!@£$%^&*_+§¡€#¢§¶•ªº«\\/<>?:;|=.,]{1,20}$/i,
           })}
         />
-        {errors.firstName && (
+        {errors.first_name && (
           <span>
             First name must be between 1 and 32 characters and not contain
             special characters{" "}
@@ -79,7 +80,7 @@ export default function MakeAccountPage(): JSX.Element {
         )}
         last name
         <input
-          {...register("lastName", {
+          {...register("last_name", {
             required: true,
             minLength: 1,
             maxLength: 32,
