@@ -2,6 +2,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useContext } from "react";
 import AuthContext from "../AuthContext";
 import axios from "axios";
+import { Navigate } from "react-router";
 
 type Inputs = {
   username: string;
@@ -45,6 +46,10 @@ export default function MakeAccountPage(): JSX.Element {
       console.log("The error is ", e);
     }
   };
+
+  const navigateToHome = () => {
+    return <Navigate to="/" />
+  }
 
   return (
     <div className="bg-blue-300 login-body">
@@ -121,6 +126,7 @@ export default function MakeAccountPage(): JSX.Element {
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor: cursor-pointer"
             type="submit"
             value="Create Account"
+            onClick={navigateToHome}
           />
         </div>
         <a
