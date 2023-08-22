@@ -31,23 +31,26 @@ export default function MakeAccountPage(): JSX.Element {
     let response: axios.AxiosResponse<APIResponse> | null = null;
     // console.log("data", data);
     try {
-        response = await axios.post("http://127.0.0.1:5000/users", data, {
+      response = await axios.post("http://127.0.0.1:5000/users", data, {
         headers: { Authorization: `Bearer ${authToken}` },
-      })
-
+      });
     } catch (e) {
       if (e.response?.status === 400) {
-        setError("username", {type:"400", message: "The username must be between 4-32 characters and contain alphanumeric characters only [aA-zZ or 0-9"})
+        setError("username", {
+          type: "400",
+          message:
+            "The username must be between 4-32 characters and contain alphanumeric characters only [aA-zZ or 0-9",
+        });
       }
       if (e.response?.status === 403) {
-        console.log("entering if")
-        setError("username", {type:"403", message: "Username already exists"});
+        setError("username", {
+          type: "403",
+          message: "Username already exists",
+        });
       }
       // console.log("Error status is", e.response.status)
       console.log("The error is ", e);
     }
-    
-    
   };
 
   return (
@@ -62,55 +65,94 @@ export default function MakeAccountPage(): JSX.Element {
           </label>
         </div>
         <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          Username
-        </label>
-        <input placeholder="Username" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          {...register("username", {
-            required: {message: "This field is required", value: true},
-            minLength: {message:"Username must be 4-32 characters", value: 4},
-            maxLength: {message:"Username must be 4-32 characters", value: 32},
-            pattern: {message: "This field must contain no special characters", value: /^[a-zA-Z0-9]+$/i},
-          })}
-        />
-        {errors.username && (
-          <span>{errors.username.message}</span>
-        )}
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Username
+          </label>
+          <input
+            placeholder="Username"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            {...register("username", {
+              required: { message: "This field is required", value: true },
+              minLength: {
+                message: "Username must be 4-32 characters",
+                value: 4,
+              },
+              maxLength: {
+                message: "Username must be 4-32 characters",
+                value: 32,
+              },
+              pattern: {
+                message: "This field must contain no special characters",
+                value: /^[a-zA-Z0-9]+$/i,
+              },
+            })}
+          />
+          {errors.username && <span>{errors.username.message}</span>}
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Username
+          </label>
+          <input
+            placeholder="Username"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            {...register("username", {
+              required: true,
+              minLength: 4,
+              maxLength: 32,
+              pattern: /^[a-zA-Z0-9]+$/i,
+            })}
+          />
+          {errors.username && (
+            <span>
+              Username must be between 4 and 32 characters and contain only
+              letters and numbers
+            </span>
+          )}
         </div>
         <div className="mb-6">
           <label className="block text-gray-700 text-sm font-bold mb-2">
             First Name
           </label>
-        <input placeholder="First Name" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          {...register("first_name", {
-            required: {value: true, message: "This field is required"},
-            pattern: {message: "This field must contain no special characters", value: /^[^±!@£$%^&*_+§¡€#¢§¶•ªº«\\/<>?:;|=.,]{1,20}$/i}
-            ,
-          })}
-        />
-        {errors.first_name && (
-          <span>
-            {errors.first_name.message}
-          </span>
-        )}
+          <input
+            placeholder="First Name"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            {...register("first_name", {
+              required: { value: true, message: "This field is required" },
+              pattern: {
+                message: "This field must contain no special characters",
+                value: /^[^±!@£$%^&*_+§¡€#¢§¶•ªº«\\/<>?:;|=.,]{1,20}$/i,
+              },
+            })}
+          />
+          {errors.first_name && <span>{errors.first_name.message}</span>}
         </div>
         <div className="mb-8">
           <label className="block text-gray-700 text-sm font-bold mb-2">
             Last Name
           </label>
-        <input placeholder="Last Name" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          {...register("last_name", {
-            required: {value: true, message: "This field is required"},
-            pattern: {value: /^[^±!@£$%^&*_+§¡€#¢§¶•ªº«\\/<>?:;|=.,]{1,20}$/i, message: "This field must contain no special characters"},
-          })}
-        />
-        {errors.last_name && (
-          <span>{errors.last_name.message}</span>
-        )}
+          <input
+            placeholder="Last Name"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            {...register("last_name", {
+              required: { value: true, message: "This field is required" },
+              pattern: {
+                value: /^[^±!@£$%^&*_+§¡€#¢§¶•ªº«\\/<>?:;|=.,]{1,20}$/i,
+                message: "This field must contain no special characters",
+              },
+            })}
+          />
+          {errors.last_name && <span>{errors.last_name.message}</span>}
         </div>
         <div className="flex items-center justify-between">
-          <input className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor: cursor-pointer" 
-          type="submit" value="Create Account"/>
+          <input
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor: cursor-pointer"
+            type="submit"
+            value="Create Account"
+          />
+          <input
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            type="submit"
+            value="Create Account"
+          />
         </div>
         <a
           className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
