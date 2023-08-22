@@ -31,15 +31,23 @@ export default function MakeAccountPage(): JSX.Element {
     let response: axios.AxiosResponse<APIResponse> | null = null;
     // console.log("data", data);
     try {
-      response = await axios.post("http://127.0.0.1:5000/users", data, {
+        response = await axios.post("http://127.0.0.1:5000/users", data, {
         headers: { Authorization: `Bearer ${authToken}` },
-      });
+      })
+
     } catch (e) {
-      console.log(e);
+      if (e.response?.status === 400) {
+        setError("username", {type:"400", message: "The username must be between 4-32 characters and contain alphanumeric characters only [aA-zZ or 0-9"})
+      }
+      if (e.response?.status === 403) {
+        console.log("entering if")
+        setError("username", {type:"403", message: "Username already exists"});
+      }
+      // console.log("Error status is", e.response.status)
+      console.log("The error is ", e);
     }
-    if (response?.status === 409) {
-      setError("username", { message: "Username already exists" });
-    }
+    
+    
   };
 
   return (
@@ -57,17 +65,14 @@ export default function MakeAccountPage(): JSX.Element {
         </label>
         <input placeholder="Username" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           {...register("username", {
-            required: true,
-            minLength: 4,
-            maxLength: 32,
-            pattern: /^[a-zA-Z0-9]+$/i,
+            required: {message: "This field is required", value: true},
+            minLength: {message:"Username must be 4-32 characters", value: 4},
+            maxLength: {message:"Username must be 4-32 characters", value: 32},
+            pattern: {message: "This field must contain no special characters", value: /^[a-zA-Z0-9]+$/i},
           })}
         />
         {errors.username && (
-          <span>
-            Username must be between 4 and 32 characters and contain only
-            letters and numbers
-          </span>
+          <span>{errors.username.message}</span>
         )}
         </div>
         <div className="mb-6">
@@ -76,16 +81,14 @@ export default function MakeAccountPage(): JSX.Element {
           </label>
         <input placeholder="First Name" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           {...register("first_name", {
-            required: true,
-            minLength: 1,
-            maxLength: 32,
-            pattern: /^[^±!@£$%^&*_+§¡€#¢§¶•ªº«\\/<>?:;|=.,]{1,20}$/i,
+            required: {value: true, message: "This field is required"},
+            pattern: {message: "This field must contain no special characters", value: /^[^±!@£$%^&*_+§¡€#¢§¶•ªº«\\/<>?:;|=.,]{1,20}$/i}
+            ,
           })}
         />
         {errors.first_name && (
           <span>
-            First name must be between 1 and 32 characters and not contain
-            special characters{" "}
+            {errors.first_name.message}
           </span>
         )}
         </div>
@@ -95,15 +98,16 @@ export default function MakeAccountPage(): JSX.Element {
           </label>
         <input placeholder="Last Name" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           {...register("last_name", {
-            required: true,
-            minLength: 1,
-            maxLength: 32,
-            pattern: /^[^±!@£$%^&*_+§¡€#¢§¶•ªº«\\/<>?:;|=.,]{1,20}$/i,
+            required: {value: true, message: "This field is required"},
+            pattern: {value: /^[^±!@£$%^&*_+§¡€#¢§¶•ªº«\\/<>?:;|=.,]{1,20}$/i, message: "This field must contain no special characters"},
           })}
         />
+        {errors.last_name && (
+          <span>{errors.last_name.message}</span>
+        )}
         </div>
         <div className="flex items-center justify-between">
-          <input className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" 
+          <input className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor: cursor-pointer" 
           type="submit" value="Create Account"/>
         </div>
         <a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">
