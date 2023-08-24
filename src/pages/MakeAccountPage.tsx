@@ -48,8 +48,8 @@ export default function MakeAccountPage(): JSX.Element {
   };
 
   const navigateToHome = () => {
-    return <Navigate to="/" />
-  }
+    return <Navigate to="/" />;
+  };
 
   return (
     <div className="bg-blue-300 login-body">
