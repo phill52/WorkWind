@@ -2,7 +2,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useContext } from "react";
 import AuthContext from "../AuthContext";
 import axios from "axios";
-import { Navigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
 
 type Inputs = {
   username: string;
@@ -27,6 +27,7 @@ export default function MakeAccountPage(): JSX.Element {
     formState: { errors },
   } = useForm<Inputs>();
   const { authToken } = useContext(AuthContext);
+  const navigate = useNavigate();
   console.log(authToken);
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     let response: axios.AxiosResponse<APIResponse> | null = null;
@@ -47,8 +48,14 @@ export default function MakeAccountPage(): JSX.Element {
     }
   };
 
-  const navigateToHome = () => {
-    return <Navigate to="/" />
+  const navigateToHome = async (event: any) => {
+    event.preventDefault();
+    try {
+      navigate('/', {replace: true})
+    } catch (err: any) {
+      console.log(err)
+    }
+    
   }
 
   return (
@@ -126,7 +133,7 @@ export default function MakeAccountPage(): JSX.Element {
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor: cursor-pointer"
             type="submit"
             value="Create Account"
-            onClick={navigateToHome}
+            onSubmit={navigateToHome}
           />
         </div>
         <a
