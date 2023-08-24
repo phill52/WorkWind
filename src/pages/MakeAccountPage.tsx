@@ -51,12 +51,11 @@ export default function MakeAccountPage(): JSX.Element {
   const navigateToHome = async (event: any) => {
     event.preventDefault();
     try {
-      navigate('/', {replace: true})
+      navigate("/", { replace: true });
     } catch (err: any) {
-      console.log(err)
+      console.log(err);
     }
-    
-  }
+  };
 
   return (
     <div className="bg-blue-300 login-body">
